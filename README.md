@@ -168,6 +168,9 @@ _Add your screenshots in the sections below 👇_
 <img width="1903" height="867" alt="image" src="https://github.com/user-attachments/assets/50d3634e-2532-4935-a7de-86bec44804ba" />
 
 ---
+### 🔹 Prediction Summary
+<img width="1600" height="763" alt="image" src="https://github.com/user-attachments/assets/166bca49-caaf-4336-b132-20336d7d5560" />
+
 
 ### 🔹 Report Explainer
 <!-- Add Screenshot Here -->
