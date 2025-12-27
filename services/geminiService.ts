@@ -105,53 +105,73 @@ export const getHealthPrediction = async (userContext: any, diagnosisData?: any)
   MANDATORY: Return a clean structured JSON. DO NOT use asterisks, markdown, or bullet points in the strings.
   Use "isHighPriority": true for anything that is particularly vulnerable or needs immediate attention.`;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-preview',
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          summary: { type: Type.STRING },
-          riskCategories: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                category: { type: Type.STRING },
-                items: {
-                  type: Type.ARRAY,
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            summary: { type: Type.STRING },
+            riskCategories: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  category: { type: Type.STRING },
                   items: {
-                    type: Type.OBJECT,
-                    properties: {
-                      heading: { type: Type.STRING },
-                      description: { type: Type.STRING },
-                      isHighPriority: { type: Type.BOOLEAN }
+                    type: Type.ARRAY,
+                    items: {
+                      type: Type.OBJECT,
+                      properties: {
+                        heading: { type: Type.STRING },
+                        description: { type: Type.STRING },
+                        isHighPriority: { type: Type.BOOLEAN }
+                      }
                     }
                   }
                 }
               }
-            }
-          },
-          monitoringSigns: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                sign: { type: Type.STRING },
-                description: { type: Type.STRING },
-                urgency: { type: Type.STRING }
+            },
+            monitoringSigns: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  sign: { type: Type.STRING },
+                  description: { type: Type.STRING },
+                  urgency: { type: Type.STRING }
+                }
               }
             }
           }
-        }
-      },
-      systemInstruction: "You are a preventive medicine expert. Identify long-term trends and risks based on patient data. Provide highly organized, professional clinical assessments without markdown artifacts."
-    }
-  });
+        },
+        systemInstruction: "You are a preventive medicine expert. Identify long-term trends and risks based on patient data. Provide highly organized, professional clinical assessments without markdown artifacts."
+      }
+    });
 
-  return JSON.parse(response.text || '{}');
+    return JSON.parse(response.text || '{}');
+  } catch (err: any) {
+    // Extract user-friendly error message
+    let errorMessage = 'Failed to generate health prediction.';
+    
+    if (err?.error?.message) {
+      errorMessage = err.error.message;
+    } else if (err?.message) {
+      errorMessage = err.message;
+    } else if (typeof err === 'string') {
+      try {
+        const parsed = JSON.parse(err);
+        errorMessage = parsed.error?.message || parsed.message || errorMessage;
+      } catch {
+        errorMessage = err;
+      }
+    }
+    
+    throw new Error(errorMessage);
+  }
 };
 
 export const createHealthChat = (systemInstruction: string) => {
