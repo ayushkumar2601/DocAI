@@ -46,7 +46,7 @@ const Overview: React.FC<{ user: UserProfile }> = ({ user }) => {
               { label: 'Name', value: user.name },
               { label: 'Email', value: user.email },
               { label: 'Current Age', value: user.age || 'N/A' },
-              { label: 'Gender Identity', value: user.gender || 'N/A' },
+              { label: 'Gender', value: user.gender || 'N/A' },
               { label: 'Clinical Goal', value: user.goal || 'N/A' },
               { label: 'Data Encryption', value: 'SHA-256' },
             ].map((item, idx) => (
@@ -55,7 +55,7 @@ const Overview: React.FC<{ user: UserProfile }> = ({ user }) => {
                 <span className="text-sm font-semibold text-neutral-700">{item.value}</span>
               </div>
             ))}
-          </div>
+          </div> 
         </section>
 
         {/* Status Card */}
